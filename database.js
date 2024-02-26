@@ -8,6 +8,7 @@ const pool = new Pool({
   user: process.env.DATABASE_USER,
   port: process.env.DATABASE_PORT,
   connectionString: process.env.DATABASE_URL,
+  ssl: true,
 });
 
 

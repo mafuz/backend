@@ -962,13 +962,17 @@ router.post('/deposittransfer', async (req, res) => {
       user_id,
     ]
   );
-let updateQuery = `update users
+
+
+      let updateQuery = `update users
                        set balance = balance + '${amount}'
                         where email = ${receiver}`;
 
   pool.query(updateQuery, (err, result) => {
   
   });
+
+  
 
   return res.json('Saved Successful');
 });

@@ -22,7 +22,10 @@ app.use(express.json());
 
 //req.body
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "https://backend-5fjm.onrender.com]"],
+  credentials: true,
+}));
 
 
 function sendEmail({ recipient_email, OTP }) {

@@ -964,10 +964,7 @@ router.post('/deposittransfer', async (req, res) => {
   );
 
 
-      let updateQuery = `update users
-                       set balance = balance + '${amount}'
-                        where email = ${receiver}`;
-
+      let updateQuery = `update users set balance = balance + '${amount}' where email = ${receiver}`;
   pool.query(updateQuery, (err, result) => {
   
   });

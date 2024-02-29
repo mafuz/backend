@@ -82,7 +82,7 @@ function sendEmail({ recipient_email, OTP }) {
 }
 
 app.get("/", (req, res) => {
-  console.log(process.env.MY_EMAIL);
+ res.send("Home Page....");
 });
 
 

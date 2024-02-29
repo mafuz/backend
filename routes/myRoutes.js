@@ -939,9 +939,9 @@ router.post('/deposittransfer', async (req, res) => {
   //   throw new Error("Please fill in all the fields")
   // }
   // Verify user available balance before transaction
-  const user = await pool.query('SELECT balance FROM users WHERE email = $1', [
-    receiver,
-  ]);
+  // const user = await pool.query('SELECT balance FROM users WHERE email = $1', [
+  //   receiver,
+  // ]);
 
   // const { balance } = user?.rows[0];
 
@@ -976,6 +976,8 @@ router.post('/deposittransfer', async (req, res) => {
 });
 
 pool.end;
+
+
 router.get('/transactions/:id', (req, res) => {
   //console.log(req.params.id);
   const selectSTMT = `select * from transactions where user_id= ${req.params.id} ORDER BY 

@@ -4,11 +4,11 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "predeploy": "npm run build", // will run the code before deploy
-    "deploy": "gh-pages -d build", // gh-pages => github pages hence this is for github deployment
-    "clean": "rm dist/bundle.js", // rm to remove the bundle.js
-    "start": "react-scripts start", // to start the react-app
-    "build-prod": "parcel build src/index.html" // to make build using parcel module bundler
+     "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "clean": "rm dist/bundle.js", 
+    "start": "react-scripts start", 
+    "build-prod": "parcel build src/index.html"
     "start": "node server",
     "dev": "nodemon server"
   },

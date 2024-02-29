@@ -939,16 +939,16 @@ router.post('/deposittransfer', async (req, res) => {
   //   throw new Error("Please fill in all the fields")
   // }
   // Verify user available balance before transaction
-  // const user = await pool.query('SELECT balance FROM users WHERE email = $1', [
-  //   receiver,
-  // ]);
+  const user = await pool.query('SELECT balance FROM users WHERE email = $1', [
+    receiver,
+  ]);
 
   // const { balance } = user?.rows[0];
 
   // if (balance < amount) {
   //   return res.status(401).send('Insufficient balance');
   // }
-  // pool.end;
+   pool.end;
 
   let newTrans = await pool.query(
     'INSERT INTO transactions (amount, receiver, sender, description, status, trans_date, trans_time, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
@@ -966,7 +966,7 @@ router.post('/deposittransfer', async (req, res) => {
 
     let updateQuery = `update users
                        set balance = balance + '${amount}'
-                        where email = ${receiver}`;
+                        where id = ${user_id}`;
 
   pool.query(updateQuery, (err, result) => {
   

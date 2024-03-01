@@ -948,7 +948,7 @@ router.post('/deposittransfer', async (req, res) => {
   // if (balance < amount) {
   //   return res.status(401).send('Insufficient balance');
   // }
-   pool.end;
+  // pool.end;
 
   let newTrans = await pool.query(
     'INSERT INTO transactions (amount, receiver, sender, description, status, trans_date, trans_time, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
@@ -964,13 +964,13 @@ router.post('/deposittransfer', async (req, res) => {
     ]
   );
 
-    let updateQuery = `update users
-                       set balance = balance + '${amount}'
-                        where id = ${user_id}`;
+  //   let updateQuery = `update users
+  //                      set balance = balance + '${amount}'
+  //                       where id = ${user_id}`;
 
-  pool.query(updateQuery, (err, result) => {
+  // pool.query(updateQuery, (err, result) => {
   
-  });
+  // });
 
   return res.json('Saved Successful');
 });

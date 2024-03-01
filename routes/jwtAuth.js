@@ -38,12 +38,12 @@ router.post('/register', validInfo, async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password, salt);
     const date = new Date();
-    const create_at = `${date.getFullYear()}-${
+    const created_at = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}`;
 
     let newUser = await pool.query(
-      'INSERT INTO users (username, email, firstname, lastname, password, roles, active, phone, photo, address, region, country, create_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
+      'INSERT INTO users (username, email, firstname, lastname, password, roles, active, phone, photo, address, region, country, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
       [
         username,
         email,
@@ -57,7 +57,7 @@ router.post('/register', validInfo, async (req, res) => {
         address,
         region,
         country,
-        create_at,
+        created_at,
       ]
     );
 

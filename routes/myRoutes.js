@@ -267,9 +267,15 @@ router.put('/productUpdate/:id', (req, res) => {
 router.put('/stockUpdate', (req, res) => {
   //console.log(req.body);
   const prodt = req.body;
+   const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+  // console.log(prodt);
   let updateQuery = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery, (err, result) => {
@@ -284,9 +290,15 @@ router.put('/stockUpdate', (req, res) => {
 
 router.put('/stockUpdate1', (req, res) => {
   const prodt = req.body;
+   const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+  // console.log(prodt);
   let updateQuery1 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery1, (err, result) => {
@@ -301,9 +313,15 @@ router.put('/stockUpdate1', (req, res) => {
 
 router.put('/stockUpdate2', (req, res) => {
   const prodt = req.body;
+   const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+  // console.log(prodt);
   let updateQuery2 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery2, (err, result) => {
@@ -317,9 +335,15 @@ router.put('/stockUpdate2', (req, res) => {
 });
 router.put('/stockUpdate3', (req, res) => {
   const prodt = req.body;
+   const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+  // console.log(prodt);
   let updateQuery3 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery3, (err, result) => {

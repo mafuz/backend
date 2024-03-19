@@ -189,7 +189,7 @@ router.get('/products/latest', (req, res) => {
 router.get('/products/cate', (req, res) => {
   const brand = 'Butter';
   //console.log(res);
-  const selectSTMT = `SELECT * FROM products where category = 'Butter' ORDER BY created_at DESC LIMIT 20`;
+  const selectSTMT = `SELECT * FROM products where category = 'Wrist Watch' ORDER BY created_at DESC LIMIT 20`;
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
       res.send(result.rows);

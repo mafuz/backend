@@ -163,8 +163,8 @@ router.get('/products/salesByMonths', (req, res) => {
 
 router.get('/customer/purchaseByMonths/:id', (req, res) => {
   // console.log(req.params.id);
-  const selectSTMT = `SELECT DATE_TRUNC('month', paid_at) AS month, sum(itemsprice) from orders 
-WHERE users = ${req.params.id} and paid_at IS NOT NULL GROUP BY month ORDER BY month DESC LIMIT 6;`;
+  const selectSTMT = `SELECT DATE_TRUNC('month', paid_at) AS month, sum(totalprice) from orders 
+WHERE users = ${req.params.id} and paid_at IS NOT NULL GROUP BY month ORDER BY month DESC LIMIT 6`;
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
       res.send(result.rows);
@@ -629,7 +629,7 @@ router.get('/orders/history/:id', (req, res) => {
   //console.log(req.params.id);
   //const param = toString(req.params.id)
   pool.query(
-    `Select * from orders where users=${req.params.id}`,
+    `Select * from orders where users=${req.params.id} ORDER BY created_at DESC LIMIT 15`,
     (err, result) => {
       if (!err) {
         res.send(result.rows);

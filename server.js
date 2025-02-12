@@ -22,7 +22,13 @@ app.use(express.json());
 
 //req.body
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000",
+   "http://localhost:4000", 
+   "https://backend-5fjm.onrender.com", 
+   "https://shop-npwe.onrender.com"],
+  credentials: true,
+}));
 
 
 function sendEmail({ recipient_email, OTP }) {
@@ -69,6 +75,7 @@ function sendEmail({ recipient_email, OTP }) {
 <!-- partial -->
   
 </body>
+
 </html>`,
     };
     transporter.sendMail(mail_configs, function (error, info) {
@@ -82,7 +89,7 @@ function sendEmail({ recipient_email, OTP }) {
 }
 
 app.get("/", (req, res) => {
-  console.log(process.env.MY_EMAIL);
+  res.send("Home Page");
 });
 
 
@@ -113,3 +120,9 @@ app.use('/api', require('./routes/myRoutes'));
 app.use('/authentication', require('./routes/jwtAuth'));
 
 app.listen(PORT, () => console.log(`Server on localhost:${PORT}`));
+
+
+
+
+
+

@@ -6,6 +6,163 @@ const pool = require('../database');
 // const { orderSuccessEmail } = require('../emailTemplates/orderTemplate');
 // const sendEmail = require('../utils/sendEmail');
 
+
+//--CLASSES route----
+router.post('/newclass', async (req, res) => {
+  //const users = req.users.id;
+  console.log(req.body);
+  const date = new Date();
+  const created_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+
+  //const rating = [
+    // {
+    //   "name": "mafuz",
+    //   "star": 4,
+    //   "review": "<p>Nice one there!</p>",
+    //   "review_date": "2024-1-25"
+    // }
+  //];
+
+  //const ratings = JSON.stringify(rating);
+  const {
+    class_name,
+    updated_at,
+  } = req.body;
+
+  let newProduct = await pool.query(
+    'INSERT INTO classes ( class_name, created_at, updated_at) VALUES ($1, $2, $3) RETURNING *',
+    [
+      class_name,
+      created_at,
+    updated_at
+     
+    ]
+  );
+  const id = newProduct.rows[0].class_id;
+  return res.json(id);
+});
+
+router.get('/classes', (req, res) => {
+  const selectSTMT = `select * from classes ORDER BY created_at DESC`;
+ // console.log(res);
+  pool.query(selectSTMT, (err, result) => {
+    if (!err) {
+      res.send(result.rows);
+    }
+  });
+  pool.end;
+});
+
+router.get('/classes/count', (req, res) => {
+
+  
+  const selectSTMT = `SELECT COUNT(class_id) FROM classes`;
+ 
+  pool.query(selectSTMT, (err, result) => {
+    if (!err) {
+      res.send(result.rows);
+      // console.log(result.rows);
+    }
+  });
+  pool.end;
+});
+
+router.get('/class/:id', (req, res) => {
+  // console.log(req.params.id);
+  
+  pool.query(
+    `Select * from classes where class_id=${req.params.id}`,
+    (err, result) => {
+      if (!err) {
+        res.send(result.rows);
+        //  console.log(result.rows);
+      }
+    }
+  );
+  pool.end;
+});
+
+
+//--TEACHER route----
+router.post('/newteacher', async (req, res) => {
+  //const users = req.users.id;
+  console.log(req.body);
+  const date = new Date();
+  const created_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+
+  //const rating = [
+    // {
+    //   "name": "mafuz",
+    //   "star": 4,
+    //   "review": "<p>Nice one there!</p>",
+    //   "review_date": "2024-1-25"
+    // }
+  //];
+
+  //const ratings = JSON.stringify(rating);
+  const {
+    class_name,
+    updated_at,
+  } = req.body;
+
+  let newProduct = await pool.query(
+    'INSERT INTO teachers ( class_name, created_at, updated_at) VALUES ($1, $2, $3) RETURNING *',
+    [
+      class_name,
+      created_at,
+    updated_at
+     
+    ]
+  );
+  const id = newProduct.rows[0].class_id;
+  return res.json(id);
+});
+
+router.get('/teachers', (req, res) => {
+  const selectSTMT = `select * from teachers ORDER BY created_at DESC`;
+ // console.log(res);
+  pool.query(selectSTMT, (err, result) => {
+    if (!err) {
+      res.send(result.rows);
+    }
+  });
+  pool.end;
+});
+
+router.get('/teachers/count', (req, res) => {
+
+  
+  const selectSTMT = `SELECT COUNT(teacher_id) FROM teachers`;
+ 
+  pool.query(selectSTMT, (err, result) => {
+    if (!err) {
+      res.send(result.rows);
+      // console.log(result.rows);
+    }
+  });
+  pool.end;
+});
+
+router.get('/teacher/:id', (req, res) => {
+  // console.log(req.params.id);
+  
+  pool.query(
+    `Select * from teachers where teacher_id=${req.params.id}`,
+    (err, result) => {
+      if (!err) {
+        res.send(result.rows);
+         console.log(result.rows);
+      }
+    }
+  );
+  pool.end;
+});
+
+
 //--product route----
 router.post('/newproduct', async (req, res) => {
   //const users = req.users.id;
@@ -23,6 +180,7 @@ router.post('/newproduct', async (req, res) => {
     //   "review_date": "2024-1-25"
     // }
   ];
+
   const ratings = JSON.stringify(rating);
   const {
     p_name,
@@ -59,6 +217,8 @@ router.post('/newproduct', async (req, res) => {
   const id = newProduct.rows[0].product_id;
   return res.json(id);
 });
+
+
 
 router.get('/products/category', (req, res) => {
   const selectSTMT = `SELECT DISTINCT p.category FROM Products p`;
@@ -163,8 +323,8 @@ router.get('/products/salesByMonths', (req, res) => {
 
 router.get('/customer/purchaseByMonths/:id', (req, res) => {
   // console.log(req.params.id);
-  const selectSTMT = `SELECT DATE_TRUNC('month', paid_at) AS month, sum(itemsprice) from orders 
-WHERE users = ${req.params.id} and paid_at IS NOT NULL GROUP BY month ORDER BY month DESC LIMIT 6;`;
+  const selectSTMT = `SELECT DATE_TRUNC('month', paid_at) AS month, sum(totalprice) from orders 
+WHERE users = ${req.params.id} and paid_at IS NOT NULL GROUP BY month ORDER BY month DESC LIMIT 6`;
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
       res.send(result.rows);
@@ -174,13 +334,12 @@ WHERE users = ${req.params.id} and paid_at IS NOT NULL GROUP BY month ORDER BY m
 });
 
 router.get('/products/latest', (req, res) => {
-   // console.log(res);
+  // console.log(res);
   const selectSTMT = `SELECT * FROM products ORDER BY created_at DESC LIMIT 20`;
 
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
       res.send(result.rows);
-      
     }
   });
   pool.end;
@@ -189,7 +348,7 @@ router.get('/products/latest', (req, res) => {
 router.get('/products/cate', (req, res) => {
   const brand = 'Butter';
   //console.log(res);
-  const selectSTMT = `SELECT * FROM products where category = 'Butter' ORDER BY created_at DESC LIMIT 20`;
+  const selectSTMT = `SELECT * FROM products where category = 'Wrist Watch' ORDER BY created_at DESC LIMIT 20`;
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
       res.send(result.rows);
@@ -200,7 +359,7 @@ router.get('/products/cate', (req, res) => {
 
 router.get('/products/ai/category/:category', (req, res) => {
   const cat = req.params.category;
-  console.log(cat);
+  // console.log(cat);
   const selectSTMT = `SELECT * FROM products where category = '${cat}' ORDER BY created_at DESC LIMIT 6`;
   pool.query(selectSTMT, (err, result) => {
     if (!err) {
@@ -267,16 +426,22 @@ router.put('/productUpdate/:id', (req, res) => {
 router.put('/stockUpdate', (req, res) => {
   //console.log(req.body);
   const prodt = req.body;
+  const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
+  // console.log(prodt);
   let updateQuery = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery, (err, result) => {
     if (!err) {
       res.send('Update was successful');
     } else {
-      console.log(err.message);
+      // console.log(err.message);
     }
   });
   pool.end;
@@ -284,9 +449,14 @@ router.put('/stockUpdate', (req, res) => {
 
 router.put('/stockUpdate1', (req, res) => {
   const prodt = req.body;
+  const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
   let updateQuery1 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery1, (err, result) => {
@@ -301,9 +471,14 @@ router.put('/stockUpdate1', (req, res) => {
 
 router.put('/stockUpdate2', (req, res) => {
   const prodt = req.body;
+  const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
   let updateQuery2 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery2, (err, result) => {
@@ -317,9 +492,14 @@ router.put('/stockUpdate2', (req, res) => {
 });
 router.put('/stockUpdate3', (req, res) => {
   const prodt = req.body;
+  const date = new Date();
+  const updated_at = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
   let updateQuery3 = `update products
                        set quantity =  quantity - '${prodt?.quantity}',
-                       sold = sold + '${prodt?.sold}'
+                       sold = sold + '${prodt?.sold}',
+                       updated_at = '${updated_at}'
                        where product_id=${prodt?.product_id}`;
 
   pool.query(updateQuery3, (err, result) => {
@@ -605,7 +785,7 @@ router.get('/orders/history/:id', (req, res) => {
   //console.log(req.params.id);
   //const param = toString(req.params.id)
   pool.query(
-    `Select * from orders where users=${req.params.id}`,
+    `Select * from orders where users=${req.params.id} ORDER BY created_at DESC LIMIT 15 `,
     (err, result) => {
       if (!err) {
         res.send(result.rows);
@@ -619,6 +799,17 @@ router.get('/orders/history', (req, res) => {
   //console.log(req.params.id);
   //const param = toString(req.params.id)
   pool.query(`Select * from orders`, (err, result) => {
+    if (!err) {
+      res.send(result.rows);
+    }
+  });
+  pool.end;
+});
+
+router.get('/orders/dashboad/history', (req, res) => {
+  //console.log(req.params.id);
+  //const param = toString(req.params.id)
+  pool.query(`Select * from orders ORDER BY created_at DESC LIMIT 15`, (err, result) => {
     if (!err) {
       res.send(result.rows);
     }
@@ -737,7 +928,7 @@ router.post('/addCategory', async (req, res) => {
   const { name, slug, updated_date } = req.body;
 
   let newCategory = await pool.query(
-    'INSERT INTO category ( name, slug,created_date,updated_date) VALUES ($1, $2, $3, $4) RETURNING *',
+    'INSERT INTO category ( name, slug, created_date, updated_date) VALUES ($1, $2, $3, $4) RETURNING *',
     [name, slug, created_date, updated_date]
   );
   const id = newCategory.rows[0].category_id;
@@ -942,12 +1133,12 @@ router.post('/deposittransfer', async (req, res) => {
     receiver,
   ]);
 
-  const { balance } = user?.rows[0];
+  // const { balance } = user?.rows[0];
 
-  if (balance < amount) {
-    return res.status(401).send('Insufficient balance');
-  }
-  pool.end;
+  // if (balance < amount) {
+  //   return res.status(401).send('Insufficient balance');
+  // }
+  // pool.end;
 
   let newTrans = await pool.query(
     'INSERT INTO transactions (amount, receiver, sender, description, status, trans_date, trans_time, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
@@ -962,6 +1153,12 @@ router.post('/deposittransfer', async (req, res) => {
       user_id,
     ]
   );
+
+  let updateQuery = `update users
+                       set balance = balance + '${amount}'
+                        where email = ${receiver}`;
+
+  pool.query(updateQuery, (err, result) => {});
 
   return res.json('Saved Successful');
 });

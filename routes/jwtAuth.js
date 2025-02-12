@@ -8,7 +8,69 @@ const jwtGenerator = require('../utils/jwtGenerator');
 
 //authorizeentication
 
+
 router.post('/register', validInfo, async (req, res) => {
+  const {
+    username,
+    email,
+    firstname,
+    lastname,
+    password,
+    roles,
+    active,
+    phone,
+    photo,
+    address,
+    region,
+    country
+  } = req.body;
+
+  try {
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [
+      email,
+    ]);
+
+    if (user.rows.length > 0) {
+      return res.status(401).json('User already exist!');
+    }
+    const roles = 'Customer';
+    const photo = 'https://res.cloudinary.com/mafuz-enterprise/image/upload/v1700665682/image_t0m6d0.jpg';
+    const salt = await bcrypt.genSalt(10);
+    const bcryptPassword = await bcrypt.hash(password, salt);
+    const date = new Date();
+    const created_at = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
+    // console.log(bcryptPassword);
+    let newUser = await pool.query(
+      'INSERT INTO users (username, email, firstname, lastname, password, roles, active, phone, photo, address, region, country, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
+      [
+        username,
+        email,
+        firstname,
+        lastname,
+        bcryptPassword,
+        roles,
+        active,
+        phone,
+        photo,
+        address,
+        region,
+        country,
+        created_at
+      ]
+    );
+
+    const jwtToken = jwtGenerator(newUser.rows[0].id);
+    // console.log(jwtToken);
+    return res.json({ jwtToken });
+  } catch (err) {
+     //console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+router.post('/admin/register', validInfo, async (req, res) => {
   const {
     username,
     email,
@@ -32,40 +94,64 @@ router.post('/register', validInfo, async (req, res) => {
     if (user.rows.length > 0) {
       return res.status(401).json('User already exist!');
     }
-    const role = 'Customer';
-    const image =
+    // const roles = 'Visitor';
+    const photo =
       'https://res.cloudinary.com/mafuz-enterprise/image/upload/v1700665682/image_t0m6d0.jpg';
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password, salt);
     const date = new Date();
-    const create_at = `${date.getFullYear()}-${
+    const created_at = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}`;
-
+    console.log(req.body.roles);
     let newUser = await pool.query(
-      'INSERT INTO users (username, email, firstname, lastname, password, roles, active, phone, photo, address, region, country, create_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
+      'INSERT INTO users (username, email, firstname, lastname, password, roles, active, phone, photo, address, region, country, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
       [
         username,
         email,
         firstname,
         lastname,
         bcryptPassword,
-        role,
+        roles,
         active,
         phone,
-        image,
+        photo,
         address,
         region,
         country,
-        create_at,
+        created_at,
       ]
     );
 
-    const jwtToken = jwtGenerator(newUser.rows[0].id);
-
-    return res.json({ jwtToken });
+    if (req?.body?.roles === 'Student')  {
+     
+      let newStudent = await pool.query(
+        'INSERT INTO students (student_name, roles, created_at) VALUES ($1, $2, $3) RETURNING *',
+        [username, roles, created_at]
+      );
+      const jwtToken = jwtGenerator(newUser.rows[0].id);
+      //  console.log(jwtToken);
+      return res.json({ jwtToken });
+    } else if (req?.body?.roles === 'Teacher') {
+      let newTeacher = await pool.query(
+        'INSERT INTO teachers (teacher_name, roles, created_at) VALUES ($1, $2, $3) RETURNING *',
+        [username, roles, created_at]
+      );
+      const jwtToken = jwtGenerator(newUser.rows[0].id);
+      //  console.log(jwtToken);
+      return res.json({ jwtToken });
+    }
+    else if (req?.body?.roles === 'Admin') {
+      // let newTeacher = await pool.query(
+      //   'INSERT INTO teachers (teacher_name, roles, created_at) VALUES ($1, $2, $3) RETURNING *',
+      //   [username, roles, created_at]
+      // );
+      const jwtToken = jwtGenerator(newUser.rows[0].id);
+      //  console.log(jwtToken);
+      return res.json({ jwtToken });
+    }
   } catch (err) {
-    // console.error(err.message);
+    //console.error(err.message);
     res.status(500).send('Server error');
   }
 });

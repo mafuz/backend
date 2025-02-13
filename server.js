@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(cors({
   origin: ["http://localhost:3000",
    "http://localhost:4000", 
-   "https://backend-5fjm.onrender.com", 
+   "https://shop-backend-jabu.onrender.com", 
    "https://shop-npwe.onrender.com"],
   credentials: true,
 }));
